@@ -85,11 +85,10 @@ class ColorPallette extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 380,
-      //width: double.infinity,
       child: Column(
         children: [
           Expanded(
-            flex: 4,
+            flex: 3,
             child: Row(
               //crossAxisAlignment: .stretch,
               children: [
@@ -97,14 +96,14 @@ class ColorPallette extends StatelessWidget {
                   child: Column(
                     children: [
                       Expanded(flex: 2, child: _Swatch(Colors.black, 'Black')),
-                      _Swatch(Colors.indigo, 'Indigo'),
+                      Expanded(child: _Swatch(Colors.indigo, 'Indigo')),
                     ],
                   ),
                 ),
                 Expanded(
                   child: Column(
                     children: [
-                      _Swatch(Colors.lightBlue, 'Light Blue'),
+                      Expanded(child: _Swatch(Colors.lightBlue, 'Light Blue')),
                       Expanded(
                         flex: 2,
                         child: Row(
@@ -113,12 +112,19 @@ class ColorPallette extends StatelessWidget {
                             Expanded(
                               child: Column(
                                 children: [
-                                  _Swatch(Colors.redAccent, 'Red Accent'),
-                                  _Swatch(Colors.yellow, 'Yellow'),
+                                  Expanded(
+                                    child: _Swatch(
+                                      Colors.redAccent,
+                                      'Red Accent',
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: _Swatch(Colors.yellow, 'Yellow'),
+                                  ),
                                 ],
                               ),
                             ),
-                            _Swatch(Colors.purple, 'Purple'),
+                            Expanded(child: _Swatch(Colors.purple, 'Purple')),
                           ],
                         ),
                       ),
@@ -142,29 +148,27 @@ class _Swatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 11,
-                fontFamily: 'monospace',
-              ),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 11,
+              fontFamily: 'monospace',
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ColoredBox(color: color, child: SizedBox.expand()),
-            ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ColoredBox(color: color, child: SizedBox.expand()),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
