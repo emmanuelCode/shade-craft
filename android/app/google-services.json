@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "92944010293",
+    "project_id": "shade-craft",
+    "storage_bucket": "shade-craft.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92944010293:android:5502bf968a08fb614e357c",
+        "android_client_info": {
+          "package_name": "com.example.shade_craft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl1S1phhh_pptThovV7AHZm5GXBYYx46M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
