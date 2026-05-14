@@ -37,9 +37,7 @@ class GeminiRepository implements AiRepository {
       return [response.text!];
 
     } 
-          //throw Exception('Failed to generate color palette');
-          return [];
-
+      
   }
 
 
@@ -76,3 +74,12 @@ class GeminiRepository implements AiRepository {
         ]);
   }
 }
+
+
+
+//hexToColor
+ // Converts a hex string like "#2E7DFF" → Color(0xff2e7dff)
+Color hexToColor(String hex) {
+    final cleaned = hex.replaceFirst('#', '');
+    return Color(int.parse('ff$cleaned', radix: 16));
+  }

@@ -31,7 +31,7 @@ class ImageInput extends StatelessWidget {
       ),
       //
       child: AspectRatio(
-        aspectRatio: 2 / 1,
+        aspectRatio: 5 / 4,
         child: Column(
           crossAxisAlignment: .center,
           mainAxisAlignment: .center,
@@ -70,21 +70,20 @@ class ColorsInfoCard extends StatelessWidget {
               ),
             ),
           ),
-
-          ColorPallette(),
+          ColorPalette(),
         ],
       ),
     );
   }
 }
 
-class ColorPallette extends StatelessWidget {
-  const ColorPallette({super.key});
+class ColorPalette extends StatelessWidget {
+  const ColorPalette({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 380,
+      height: 512,
       child: Column(
         children: [
           Expanded(
@@ -165,7 +164,10 @@ class _Swatch extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ColoredBox(color: color, child: SizedBox.expand()),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: ColoredBox(color: color, child: SizedBox.expand()),
+            ),
           ),
         ),
       ],
