@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shade_craft/core/data/generative_ai_repository.dart';
 import 'package:shade_craft/feature/generate_color/view/color_palette_view_event.dart';
@@ -9,27 +10,36 @@ part 'color_palette_intent.g.dart';
 @riverpod
 class ColorPaletteIntentFactory extends _$ColorPaletteIntentFactory {
   late final GeminiRepository geminiRepository;
+  late final picker = ImagePicker();
 
-
-@override
-ColorPaletteEntity build() {
-  geminiRepository = GeminiRepository();
-  return ColorPaletteEntity(
-    name: '',
-    colors: ['#FFFFF'],
-    description: '',
-  );
-}
-
-void toIntent( ColorPaletteViewEvent colorPaletteViewEvent){
-  switch (colorPaletteViewEvent) {
-
-    case PickImage():
-
+  @override
+  Future<ColorPaletteEntity> build() {
+    geminiRepository = GeminiRepository();
+    return Future.value(ColorPaletteEntity(
+      name: '',
+      colors: [
+        '0xffffffff',
+        '0xffffffff',
+        '0xffffffff',
+        '0xffffffff',
+        '0xffffffff',
+        '0xffffffff',
+        '0xffffffff',
+      ],
+      description: '',
+    ));
   }
 
+  void toIntent(ColorPaletteViewEvent colorPaletteViewEvent) async {
+    switch (colorPaletteViewEvent) {
+      case PickImage():
+        final XFile? image = await picker.pickImage(
+          source: ImageSource.gallery,
+        );
+        final imageBytes = await image!.readAsBytes();
 
-}
-
-
+       state = await AsyncValue.guard(() => geminiRepository.getColorPalette(imageBytes));
+       // state = await geminiRepository.getColorPalette(imageBytes);
+    }
+  }
 }

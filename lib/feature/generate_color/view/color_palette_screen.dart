@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shade_craft/feature/generate_color/intent/color_palette_intent.dart';
+
+import 'color_palette_view_event.dart';
 
 class ColorPaletteScreen extends StatelessWidget {
   const ColorPaletteScreen({super.key});
@@ -16,13 +20,15 @@ class ColorPaletteScreen extends StatelessWidget {
   }
 }
 
-class ImageInput extends StatelessWidget {
+class ImageInput extends ConsumerWidget {
   const ImageInput({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+        var action = ref.read(colorPaletteIntentFactoryProvider.notifier);
+
+
     return Container(
-      //padding: const EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -38,7 +44,9 @@ class ImageInput extends StatelessWidget {
           children: [
             Icon(Icons.upload_file),
             Text('Upload your .png image'),
-            OutlinedButton(onPressed: () {}, child: Text('Browse files')),
+            OutlinedButton(onPressed: () => action.toIntent(PickImage()) , 
+            
+            child: Text('Browse files')),
           ],
         ),
       ),
@@ -46,39 +54,49 @@ class ImageInput extends StatelessWidget {
   }
 }
 
-class ColorsInfoCard extends StatelessWidget {
+class ColorsInfoCard extends ConsumerWidget {
   const ColorsInfoCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(colorPaletteIntentFactoryProvider);
+
+  return state.when(
+    loading: () => const Center(child: CircularProgressIndicator()),
+    error: (error, stackTrace) => Text(error.toString()),
+    data: (data) => Card(
       color: Colors.blueGrey,
       margin: EdgeInsets.all(16.0),
       child: Column(
         children: [
           ListTile(
-            title: Text('Color Blend Name'),
-
+            title: Text(data.name),
             subtitle: Container(
               height: 50,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: AlignmentGeometry.centerLeft,
                   end: AlignmentGeometry.centerRight,
-                  colors: [Colors.black87, Colors.red],
+                  colors: data.colors.map((color) => Color(int.parse(color))).toList(),
                 ),
               ),
             ),
           ),
-          ColorPalette(),
+          ColorPalette(colors: data.colors),
+
+          Text(data.description),
         ],
       ),
-    );
-  }
+    ),
+  );
+  
+}
+
 }
 
 class ColorPalette extends StatelessWidget {
-  const ColorPalette({super.key});
+  final List<String> colors;
+  const ColorPalette({required this.colors, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,15 +112,15 @@ class ColorPalette extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      Expanded(flex: 2, child: _Swatch(Colors.black, 'Black')),
-                      Expanded(child: _Swatch(Colors.indigo, 'Indigo')),
+                      Expanded(flex: 2, child: _Swatch(Color(int.parse(colors[0])), 'Black')),
+                      Expanded(child: _Swatch(Color(int.parse(colors[1])), 'Indigo')),
                     ],
                   ),
                 ),
                 Expanded(
                   child: Column(
                     children: [
-                      Expanded(child: _Swatch(Colors.lightBlue, 'Light Blue')),
+                      Expanded(child: _Swatch(Color(int.parse(colors[2])), 'Light Blue')),
                       Expanded(
                         flex: 2,
                         child: Row(
@@ -113,17 +131,17 @@ class ColorPalette extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: _Swatch(
-                                      Colors.redAccent,
+                                      Color(int.parse(colors[3])),
                                       'Red Accent',
                                     ),
                                   ),
                                   Expanded(
-                                    child: _Swatch(Colors.yellow, 'Yellow'),
+                                    child: _Swatch( Color(int.parse(colors[4])), 'Yellow'),
                                   ),
                                 ],
                               ),
                             ),
-                            Expanded(child: _Swatch(Colors.purple, 'Purple')),
+                            Expanded(child: _Swatch( Color(int.parse(colors[5])), 'Purple')),
                           ],
                         ),
                       ),
@@ -133,7 +151,7 @@ class ColorPalette extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(flex: 1, child: _Swatch(Colors.green, 'Green')),
+          Expanded(flex: 1, child: _Swatch( Color(int.parse(colors[6])), 'Green')),
         ],
       ),
     );

@@ -13,7 +13,8 @@ part of 'color_palette_intent.dart';
 final colorPaletteIntentFactoryProvider = ColorPaletteIntentFactoryProvider._();
 
 final class ColorPaletteIntentFactoryProvider
-    extends $NotifierProvider<ColorPaletteIntentFactory, ColorPaletteEntity> {
+    extends
+        $AsyncNotifierProvider<ColorPaletteIntentFactory, ColorPaletteEntity> {
   ColorPaletteIntentFactoryProvider._()
     : super(
         from: null,
@@ -31,31 +32,24 @@ final class ColorPaletteIntentFactoryProvider
   @$internal
   @override
   ColorPaletteIntentFactory create() => ColorPaletteIntentFactory();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ColorPaletteEntity value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<ColorPaletteEntity>(value),
-    );
-  }
 }
 
 String _$colorPaletteIntentFactoryHash() =>
-    r'658bfc80049cb0c490ce47c528a451741c86f593';
+    r'6283edd210ed4e0dbcf5d3f9a077eca07c8a2faf';
 
 abstract class _$ColorPaletteIntentFactory
-    extends $Notifier<ColorPaletteEntity> {
-  ColorPaletteEntity build();
+    extends $AsyncNotifier<ColorPaletteEntity> {
+  FutureOr<ColorPaletteEntity> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<ColorPaletteEntity, ColorPaletteEntity>;
+    final ref =
+        this.ref as $Ref<AsyncValue<ColorPaletteEntity>, ColorPaletteEntity>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<ColorPaletteEntity, ColorPaletteEntity>,
-              ColorPaletteEntity,
+              AnyNotifier<AsyncValue<ColorPaletteEntity>, ColorPaletteEntity>,
+              AsyncValue<ColorPaletteEntity>,
               Object?,
               Object?
             >;
