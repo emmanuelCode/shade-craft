@@ -36,8 +36,17 @@ Analyze the image and produce a JSON response following the exact schema below.
    - 2–3 supporting accent colors (harmonically derived)
    - 1 near-neutral or shadow color (grounding tone)
    - 1 highlight or specular-friendly color (works as a light bounce or rim light in 3D)
-5. **Naming** — Create a short, evocative, professional palette name (2–4 words, title case). Think of names used in design tools or Pantone collections.
-6. **Description** — Write a clear, expert explanation covering:
+5. **Gradient ordering** — Sort the final 7 colors so they flow naturally
+   from left to right as a linear gradient. Follow this order:
+   - Start with the darkest or most saturated anchor color
+   - Progress through mid-tones in hue order (follow the visible spectrum
+     or a smooth temperature shift — warm to cool, or cool to warm)
+   - End with the lightest or most neutral color
+   - Avoid placing two visually similar colors next to each other
+   - The sequence must read as a continuous, smooth gradient with no
+     jarring jumps when rendered in a Flutter LinearGradient widget
+6. **Naming** — Create a short, evocative, professional palette name (2–4 words, title case). Think of names used in design tools or Pantone collections.
+7. **Description** — Write a clear, expert explanation covering:
    - What the image depicts and its dominant mood
    - The harmony principle used and why it suits the image
    - How each color grouping functions in the palette
@@ -77,6 +86,9 @@ Respond with **only** a valid JSON object. No markdown, no code fences, no pream
 - **Do not include alpha channels** — 6-digit hex only.
 - **Output must be parseable JSON** — no trailing commas, no comments inside the JSON.
 - **Never return an error string inside the JSON fields** — if the image is unclear, still produce the best possible palette from whatever visual information is available.
+- **Colors must be gradient-ordered** — the `colors` array must be sorted
+  so adjacent entries are visually harmonious when used as gradient stops.
+  Never return colors in extraction order or arbitrary order.
 
 ---
 

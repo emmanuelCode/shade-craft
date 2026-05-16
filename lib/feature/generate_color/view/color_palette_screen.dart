@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shade_craft/feature/generate_color/intent/color_palette_intent.dart';
+import 'package:shade_craft/core/utils/color_extensions.dart';
 
 import 'color_palette_view_event.dart';
 
@@ -10,7 +11,7 @@ class ColorPaletteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Color Palette Generator')),
+      appBar: AppBar(title: const Text('Shade Craft')),
       body: SingleChildScrollView(
         child: Column(
           children: const [ImageInput(), Divider(), ColorsInfoCard()],
@@ -25,8 +26,7 @@ class ImageInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-        var action = ref.read(colorPaletteIntentFactoryProvider.notifier);
-
+    var action = ref.read(colorPaletteIntentFactoryProvider.notifier);
 
     return Container(
       margin: EdgeInsets.all(16.0),
@@ -44,9 +44,10 @@ class ImageInput extends ConsumerWidget {
           children: [
             Icon(Icons.upload_file),
             Text('Upload your .png image'),
-            OutlinedButton(onPressed: () => action.toIntent(PickImage()) , 
-            
-            child: Text('Browse files')),
+            OutlinedButton(
+              onPressed: () => action.toIntent(PickImage()),
+              child: Text('Browse files'),
+            ),
           ],
         ),
       ),
@@ -61,37 +62,72 @@ class ColorsInfoCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(colorPaletteIntentFactoryProvider);
 
-  return state.when(
-    loading: () => const Center(child: CircularProgressIndicator()),
-    error: (error, stackTrace) => Text(error.toString()),
-    data: (data) => Card(
-      color: Colors.blueGrey,
-      margin: EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(data.name),
-            subtitle: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: AlignmentGeometry.centerLeft,
-                  end: AlignmentGeometry.centerRight,
-                  colors: data.colors.map((color) => Color(int.parse(color))).toList(),
+    return state.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Text(error.toString()),
+      data: (data) => Card(
+        color: Colors.blueGrey,
+        margin: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            ListTile(
+              title: Text(
+                data.name,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge!.copyWith(color: Colors.white60),
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              subtitle: Container(
+                height: 50,
+                margin: const EdgeInsets.only(top: 12.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  gradient: LinearGradient(
+                    begin: AlignmentGeometry.centerLeft,
+                    end: AlignmentGeometry.centerRight,
+                    colors: data.colors
+                        .map((color) => Color(int.parse(color)))
+                        .toList(),
+                  ),
                 ),
               ),
             ),
-          ),
-          ColorPalette(colors: data.colors),
+            ColorPalette(colors: data.colors),
+            SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Text(
+                'Colors Application Note',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge!.copyWith(color: Colors.white60),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white60),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              margin: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
 
-          Text(data.description),
-        ],
+              child: Text(
+                data.description,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge!.copyWith(color: Colors.white60),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-  
-}
-
+    );
+  }
 }
 
 class ColorPalette extends StatelessWidget {
@@ -100,59 +136,92 @@ class ColorPalette extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 512,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Row(
-              //crossAxisAlignment: .stretch,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(flex: 2, child: _Swatch(Color(int.parse(colors[0])), 'Black')),
-                      Expanded(child: _Swatch(Color(int.parse(colors[1])), 'Indigo')),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(child: _Swatch(Color(int.parse(colors[2])), 'Light Blue')),
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          // crossAxisAlignment: .stretch,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: _Swatch(
-                                      Color(int.parse(colors[3])),
-                                      'Red Accent',
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: _Swatch( Color(int.parse(colors[4])), 'Yellow'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(child: _Swatch( Color(int.parse(colors[5])), 'Purple')),
-                          ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 512,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Row(
+                //crossAxisAlignment: .stretch,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: _Swatch(
+                            Color(int.parse(colors[0])),
+                            Color(int.parse(colors[0])).toHex,
+                          ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: _Swatch(
+                            Color(int.parse(colors[1])),
+                            Color(int.parse(colors[1])).toHex,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: _Swatch(
+                            Color(int.parse(colors[2])),
+                            Color(int.parse(colors[2])).toHex,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            // crossAxisAlignment: .stretch,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: _Swatch(
+                                        Color(int.parse(colors[3])),
+                                        Color(int.parse(colors[3])).toHex,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: _Swatch(
+                                        Color(int.parse(colors[4])),
+                                        Color(int.parse(colors[4])).toHex,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: _Swatch(
+                                  Color(int.parse(colors[5])),
+                                  Color(int.parse(colors[5])).toHex,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(flex: 1, child: _Swatch( Color(int.parse(colors[6])), 'Green')),
-        ],
+            Expanded(
+              flex: 1,
+              child: _Swatch(
+                Color(int.parse(colors[6])),
+                Color(int.parse(colors[6])).toHex,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
