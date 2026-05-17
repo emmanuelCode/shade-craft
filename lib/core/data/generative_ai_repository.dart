@@ -63,6 +63,8 @@ class GeminiRepository implements AiRepository {
       //throw Exception('Gemini Nano is not available');
 
       debugPrint('Gemini Nano is not available');
+    } else {
+      debugPrint('Gemini Nano is available');
     }
     //instruction
     // final respondToPromptMsg =

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shade_craft/feature/generate_color/intent/color_palette_intent.dart';
 import 'package:shade_craft/core/utils/color_extensions.dart';
 
+import '../../../core/data/palette_export_format.dart';
 import 'color_palette_view_event.dart';
 
 class ColorPaletteScreen extends StatelessWidget {
@@ -41,12 +42,19 @@ class ImageInput extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: .center,
           mainAxisAlignment: .center,
+          spacing: 24,
           children: [
-            Icon(Icons.upload_file),
-            Text('Upload your .png image'),
+            Icon(Icons.upload_file, size: 64),
+            Text(
+              'Upload your png image',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             OutlinedButton(
               onPressed: () => action.toIntent(PickImage()),
-              child: Text('Browse files'),
+              style: OutlinedButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.titleMedium,
+              ),
+              child: Text('Browse file'),
             ),
           ],
         ),
@@ -123,6 +131,9 @@ class ColorsInfoCard extends ConsumerWidget {
                 ).textTheme.bodyLarge!.copyWith(color: Colors.white60),
               ),
             ),
+
+            //export UI
+            ExportSelection(),
           ],
         ),
       ),
@@ -145,7 +156,6 @@ class ColorPalette extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Row(
-                //crossAxisAlignment: .stretch,
                 children: [
                   Expanded(
                     child: Column(
@@ -258,6 +268,63 @@ class _Swatch extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ExportSelection extends ConsumerStatefulWidget {
+  const ExportSelection({super.key});
+
+  @override
+  ConsumerState<ExportSelection> createState() => _ExportSelectionState();
+}
+
+class _ExportSelectionState extends ConsumerState<ExportSelection> {
+  PaletteExportFormat _selectedFormat = PaletteExportFormat.values.first;
+
+  @override
+  Widget build(BuildContext context) {
+    var action = ref.watch(colorPaletteIntentFactoryProvider.notifier);
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          OutlinedButton.icon(
+            onPressed: () {
+              action.toIntent(Export(format: _selectedFormat));
+            },
+            label: Text(
+              'Export',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium!.copyWith(color: Colors.white60),
+            ),
+            icon: Icon(Icons.download_outlined),
+            style: OutlinedButton.styleFrom(
+              iconColor: Colors.white60,
+              side: BorderSide(color: Colors.white60),
+            ),
+          ),
+          SizedBox(width: 16),
+          DropdownButton<PaletteExportFormat>(
+            dropdownColor: Colors.grey,
+            iconEnabledColor: Colors.white60,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: Colors.white60),
+            value: _selectedFormat,
+            items: PaletteExportFormat.values.map((format) {
+              return DropdownMenuItem(value: format, child: Text(format.label));
+            }).toList(),
+            onChanged: (format) {
+              if (format == null) return;
+
+              setState(() => _selectedFormat = format);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

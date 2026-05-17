@@ -1,4 +1,4 @@
-# shade_craft
+# Shade Craft
 
 A new Flutter project.
 
