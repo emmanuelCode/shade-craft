@@ -60,7 +60,6 @@ class GeminiRepository implements AiRepository {
     final bool isAvailable = await geminiNanoAndroid.isAvailable();
 
     if (!isAvailable) {
-      //throw Exception('Gemini Nano is not available');
 
       debugPrint('Gemini Nano is not available');
     } else {
@@ -79,7 +78,7 @@ class GeminiRepository implements AiRepository {
   Future<GenerateContentResponse> firebaseAI() async {
     return FirebaseAI.googleAI()
         .generativeModel(
-          model: 'gemini-3.1-flash-lite',
+          model: 'gemini-flash-lite-latest',
           systemInstruction: Content.system(instructions),
           generationConfig: GenerationConfig(
             responseMimeType: 'application/json',
